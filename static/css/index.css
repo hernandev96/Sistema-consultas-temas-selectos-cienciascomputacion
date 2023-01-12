@@ -1,0 +1,29 @@
+
+.contenedor{
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    margin-top: 150px;
+}
+.space{
+    margin-bottom: 30px;
+}
+.btn{
+    width:160px;
+    height: 60px;
+}
+
+.btn p a{
+    text-decoration: none;
+    color:white;
+    font-size: 25px;
+}
+.btn p a:hover{
+    text-decoration: none;
+    color:white;
+    font-size: 25px;
+}
+.margin{
+    margin-left: 40px;
+    filter: drop-shadow(16px 16px 4px black);
+}

@@ -1,0 +1,419 @@
+<link rel="stylesheet" href="css/consulta.css">
+<script type="text/javascript" src="js/card.js"></script>
+<script type="text/javascript" src="js/cambios.js"></script>
+<link rel="stylesheet" href="css/cambios.css">
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $.ajaxSetup({contentType:"application/json; charset=utf-8"});
+        var tags=[];
+        var friends=[];
+        var data;
+        var id=0;
+        $("#consultar").click(function(){
+            
+            var id=$("#id_usuario").val();
+            $("#tags-list li").remove();
+            $("#friends-list li").remove();
+            $("#info input").each(function(){
+                $(this).val("");
+            });
+            $.ajax({
+                type:'GET',
+                url:'/usuario/'+id,
+                dataType:'json',
+                success:(result)=>{
+                    data=result;
+                    $("#info").attr('class','contenedor-info2');
+                    info(result);
+                    tags=data.tags;
+                    friends=data.friends;
+
+                },
+                error:(result)=>{
+                    toastr.options.closeButton = true;
+                    toastr.error("Error "+result.status+'\nNo se encontro el usuario solicitado');
+                    
+                    
+                }
+            });
+        });
+        $('#borrar').click(function(){
+            $("#id_usuario").val("");
+            $("#info input").each(function(){
+                $(this).val("");
+            });
+            $("#info").attr('class','contenedor-info');
+            $("#tags-list li").remove();
+            $("#friends-list li").remove();
+
+        });
+        /*funciones a ejecutar en los eventos de eliminar tags o amigos*/
+        $("#remove_tag").click(function(){
+            var tag=$("#eliminar_tag").val();
+            if(tag!=""){
+                $("#tags-list li").each(function(){
+                    var aux=$(this)[0].innerHTML;
+                    if(aux==tag){
+                        $(this).remove();
+                        tags=tags.filter(string=>string!=aux);
+                        toastr.success("Tag eliminado correctamente");
+                        $("#eliminar_tag").val("");
+                    }
+                });
+            }else{
+                toastr.error("No se encontro el tag o el tag esta vacio!!");
+                $("#eliminar_tag").val("");
+            }
+        });
+        $("#add_tag").click(function(){
+            var tag=$("#eliminar_tag").val();
+            if(tag!=""){
+                var item_tag=document.createTextNode(tag);
+                var list_tag=document.createElement('li');
+                list_tag.appendChild(item_tag);
+                document.getElementById('tags-list').appendChild(list_tag);
+                tags.push(tag);
+                toastr.success("Tag agregado correctamente");
+                $("#eliminar_tag").val("");
+            }else{
+                toastr.error("No se permiten tags vacios!!!");
+            }
+        });
+        /*Funciones para agregar o eliminar amigos*/
+        $("#remove_friend").click(function(){
+            var amigo=$("#eliminar_friend").val();
+            console.log(amigo);
+            if(amigo!=""){
+                var incluido=false;
+                friends.forEach(function(item){
+                    if(item.name==amigo){
+                        incluido=true;
+                    }
+                })
+                if(incluido){
+                    $("#friends-list li:contains("+amigo+")").remove();
+                    toastr.success("Se ha eliminado el amigo");
+                    friends=friends.filter(item=>item.name!=amigo);
+                    friends.forEach(function(item){
+                        item.id=id;
+                        id++;
+                    });
+                    console.log(friends);
+                    id=0;
+                    $("#friends-list li").remove();
+                    friends.forEach(item=>{
+                        var aux=document.createTextNode("ID: "+item.id+" Name: "+item.name);
+                        var li=document.createElement("li");
+                        li.appendChild(aux);
+                        $("#friends-list").append(li);
+                    });
+                }else{
+                    toastr.error("No existe el campo a eliminar!!");
+                }
+                
+                $("#eliminar_friend").val("");
+            }else{
+                toastr.error("No se admiten campos vacios!!");
+                $("#eliminar_friend").val("");
+            }
+        });
+        $("#add_friend").click(function(){
+            var amigo=$("#eliminar_friend").val();
+            if(amigo!=""){
+                var aux=document.createTextNode("ID: "+friends.length+" Name: "+amigo);
+                var li=document.createElement("li");
+                li.appendChild(aux);
+                $("#friends-list").append(li);
+                toastr.success("Se agrego correctamente al nuevo amigo!!");
+                friends.push({
+                    'id':friends.length,
+                    'name':amigo
+                });
+                console.log(friends);
+                $("#eliminar_friend").val("");
+            }else{
+                toastr.error("No se permiten campos vacios!!!");
+                
+            }
+        });
+
+        /*Funcion para actaualizar los datos de un usuario*/
+        $("#update").click(function(){
+            update_user(data,tags,friends);
+            console.log(data);
+            $.ajax({
+                type:'PATCH',
+                dataType:'json',
+                data:JSON.stringify(data),
+                url:'/usuario/update',
+                success:(result)=>{
+                    toastr.success("Se actualizo de manera correcta el Usuario!!");
+                     $("#id_usuario").val("");
+                    $("#info input").each(function(){
+                        $(this).val("");
+                    });
+                    $("#info").attr('class','contenedor-info');
+                    $("#tags-list li").remove();
+                    $("#friends-list li").remove();
+
+                },
+                error:(result)=>{
+                    toastr.error("No se pudo actualizar el usuario de manera correcta!!");
+                }
+
+            });
+
+        });
+        
+    });
+</script>
+<div class="row contenedor-barra">
+    <div class="centrar">
+        <div class="busqueda">
+            <div class="margin">
+                <h2 class="subtitle">Cambios</h2>
+            </div>
+            <div class="margin">
+                <img src="images/buscar.png">
+                <input class="search-input" name="buscar" id="id_usuario" type="text" required placeholder="Consulta de usuarios por id">
+            </div>
+            <div class="margin">
+                <button class="btn btn-dark" id="consultar">
+                    <p><b>Consultar</b></p>
+                </button>
+            </div>
+            <div class="margin">
+                <button class="btn btn-danger" id="borrar">
+                    <p><b>Borrar</b></p>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="contenedor-info" id="info">
+    <div class="content">
+        <div class="info " id="info_user">
+           <div class="margen">
+                <label for="user_id"><img src="images/key.png">
+                    <b>ID usuario:</b> 
+                </label>
+                <input type="text" name="user_id" id="user_id" class="info-input" readonly>
+           </div>
+           <div class="margen">
+                <label for="index_user"><img src="images/index.png">
+                    <b>Index:</b> 
+                </label>
+                <input type="text" name="index_user" id="index_user" class="info-input" readonly>
+           </div>
+           <div class="margen">
+                <label for="guid_user"><img src="images/index.png">
+                    <b>GUID:</b> 
+                </label>
+                <input type="text" name="guid_user" id="guid_user" class="info-input" readonly>
+           </div>
+
+            <div class="margen">
+                <label for="active_user"><img src="images/active.png">
+                    <b>IsActive:</b> 
+                </label>
+                <input type="text" name="active_user" id="active_user" class="info-input" placeholder="Valores true o false">
+           </div>
+
+           <div class="margen">
+                <label for="balance_user"><img src="images/balance.png">
+                    <b>Balance:</b> 
+                </label>
+                <input type="text" name="balance_user" id="balance_user" class="info-input" >
+           </div>
+
+            <div class="margen">
+                <label for="picture_user"><img src="images/picture.png">
+                    <b>Picture:</b> 
+                </label>
+                <input type="text" name="picture_user" id="picture_user" class="info-input" >
+           </div>
+
+            <div class="margen">
+                <label for="age_user"><img src="images/edad.png">
+                    <b>Edad:</b> 
+                </label>
+                <input type="text" name="age_user" id="age_user" class="info-input" >
+           </div>
+
+           <div class="margen">
+                <label for="eye_user"><img src="images/eyes.png">
+                    <b>Eye Color:</b> 
+                </label>
+                <input type="text" name="eye_user" id="eye_user" class="info-input" >
+           </div>
+
+           <div class="margen">
+                <label for="username">
+                    <img src="images/user.png">
+                    <b>Nombre:</b>
+                </label>
+                <input type="text" name="name" id="username" class="info-input" >
+           </div>
+
+            <div class="margen">
+                <label for="gender_user">
+                    <img src="images/gender.png">
+                    <b>Genero:</b>
+                </label>
+                <input type="text" name="gender_user" id="gender_user" class="info-input" >
+           </div>
+
+           <div class="margen">
+                <label for="company_user">
+                    <img src="images/company.png">
+                    <b>Compañia:</b>
+                </label>
+                <input type="text" name="company_user" id="company_user" class="info-input" >
+           </div>
+
+            <div class="margen">
+                <label for="email_user">
+                    <img src="images/email.png">
+                    <b>Email:</b>
+                </label>
+                <input type="text" name="email_user" id="email_user" class="info-input" >
+           </div>
+
+            <div class="margen">
+                <label for="phone_user">
+                    <img src="images/phone.png">
+                    <b>Telefono:</b>
+                </label>
+                <input type="text" name="phone_user" id="phone_user" class="info-input" >
+           </div>
+
+            <div class="margen">
+                <label for="address_user">
+                    <img src="images/address.png">
+                    <b>Direccion:</b>
+                </label>
+                <input type="text" name="address_user" id="address_user" class="info-input" >
+           </div>
+
+            <div class="margen">
+                <label for="about_user">
+                    <img src="images/about.png">
+                    <b>About:</b>
+                </label>
+                <input type="text" name="about_user" id="about_user" class="info-input" >
+           </div>
+
+            <div class="margen">
+                <label for="registered_user">
+                    <img src="images/register.png">
+                    <b>Registered:</b>
+                </label>
+                <input type="text" name="registered_user" id="registered_user" class="info-input" readonly>
+           </div>
+
+           <div class="margen">
+                <label for="latitude_user">
+                    <img src="images/coordenadas.png">
+                    <b>Latitud:</b>
+                </label>
+                <input type="text" name="latitude_user" id="latitude_user" class="info-input" >
+           </div>
+
+           <div class="margen">
+                <label for="longitude_user">
+                    <img src="images/coordenadas.png">
+                    <b>Longitud:</b>
+                </label>
+                <input type="text" name="longitud_user" id="longitud_user" class="info-input" >
+           </div>
+            
+            <div class="margen">
+                <div class="flex">
+                    <label for="tags_user">
+                        <img src="images/tag.png">
+                        <b>Tags:</b>
+                    </label>
+                    <ul id="tags-list">
+                        
+                    </ul>
+                </div>
+           </div>
+
+           <div class="margen">
+                <div class="flex">
+                    <label for="friends_user">
+                        <img src="images/friends.png">
+                        <b>Amigos:</b>
+                    </label>
+                    <ul id="friends-list">
+                        
+                    </ul>
+                </div>
+            </div>
+
+            <div class="margen">
+                <label for="saludo_user">
+                    <img src="images/saludo.png">
+                    <b>Saludo:</b>
+                </label>
+                <input type="text" name="saludo_user" id="saludo_user" class="info-input" >
+            </div>
+
+            <div class="margen">
+                <label for="fruit_user">
+                    <img src="images/fruit.png">
+                    <b>Fruta Favorita:</b>
+                </label>
+                <input type="text" name="fruit_user" id="fruit_user" class="info-input" >
+            </div>
+            
+        </div>
+        <div class="delete">
+            <div class="delete-tag">
+                <h4>
+                    Eliminar Tag
+                </h4>
+                <label for="eliminar_tag">
+                        <img src="images/tag.png">
+                        <b>Tags:</b>
+                    </label>
+                <input type="text" name="eliminar_tag" id="eliminar_tag" class="info-input" >
+                <br>
+                <div>
+                    <button class="btn btn-danger" id="remove_tag">
+                        Eliminar Tag
+                    </button>
+                    <button class="btn btn-success" id="add_tag">
+                        Añadir Tag
+                    </button>
+                </div>
+            </div>
+            <br><br>
+            <div class="delete-friend">
+                <h4>
+                    Eliminar Amigos
+                </h4>
+                <label for="eliminar_friend">
+                        <img src="images/friends.png">
+                        <b>Amigos:</b>
+                    </label>
+                <input type="text" name="eliminar_friend" id="eliminar_friend" class="info-input" >
+                <br>
+                <div>
+                    <button class="btn btn-danger" id="remove_friend">
+                        Eliminar Amigo
+                    </button>
+                    <button class="btn btn-success" id="add_friend">
+                        Añadir Amigo
+                    </button>
+                </div>
+            </div>
+            <div class="margen">
+                <button class="btn btn-warning" id="update">
+                    Actualizar Usuario
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

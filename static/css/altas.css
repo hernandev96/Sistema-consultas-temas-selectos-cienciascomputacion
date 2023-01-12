@@ -1,0 +1,51 @@
+.subtitle{
+    color:white
+}
+.container-subtitle{
+    display: grid;
+    align-items: center;
+    justify-content: center;
+}
+.info-input{
+    width:250px;
+    background: none;
+    border: none;
+    border-bottom:solid 2px white;
+    outline: none;
+    color:white;
+}
+.info{
+    
+    width: 800px;
+    height:auto;
+    border-radius: 20px;
+    background: #00d2ff;
+    background: -webkit-linear-gradient(to right, #3a7bd5, #00d2ff);
+    background: linear-gradient(to right, #3a7bd5, #00d2ff); 
+    padding:20px;
+    display: flex;
+    flex-wrap:wrap;
+    
+}
+label{
+    color:white;
+}
+.margen{
+    margin-right: 25px;
+    margin-top:25px;
+}
+.contenedor{
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+.flex{
+    display: flex;
+}
+ul li{
+    list-style: disc;
+    color:white;
+}
+::-webkit-input-placeholder{
+    color:white;
+}

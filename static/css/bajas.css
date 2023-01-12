@@ -1,0 +1,117 @@
+.title{
+    color:white;
+    filter: drop-shadow(16px 16px 4px #FFF200);
+    margin-left: 30px;
+}
+.container-table{
+    padding: 50px;
+}
+#table_user{
+    width: 1100px;
+    height: auto;
+    border-radius: 15px;
+    background: #0f0c29;
+    background: -webkit-linear-gradient(to left, #24243e, #302b63, #0f0c29); 
+    background: linear-gradient(to left, #24243e, #302b63, #0f0c29);
+
+}
+#table_user th{
+    height: 50px;
+    padding: 10px;
+    color:white;
+    font-size:18px;
+    border-bottom: solid 2px white;
+}
+#table_user td{
+    height: 50px;
+    padding: 10px;
+    color:white;
+    font-size:18px;
+    
+}
+#table_user td{
+    border-top: solid 2px white;
+    padding:10px;
+}
+.subtitle{
+    color: white;
+}
+.busqueda{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+.margin{
+    margin-right: 50px;
+}
+.search-input{
+    width:350px;
+    background: none;
+    border: none;
+    border-bottom:solid 2px white;
+    outline: none;
+    color:white;
+    font-size: 18px;
+}
+::-webkit-input-placeholder{
+    color:white;
+}
+
+
+/* css de la alerta  */
+.alert-container-hide{
+    display: none;
+}
+.alert-container-show{
+    position: absolute;
+    top:35%;
+    left:35%;
+}
+.alerta{
+    width:600px;
+    background: #8E0E00; 
+    background: -webkit-linear-gradient(to right, #1F1C18, #8E0E00); 
+    background: linear-gradient(to right, #1F1C18, #8E0E00); 
+    border-radius: 50px ;
+    height: 190px;
+    padding: 15px;
+}
+.alerta-header{
+    display:grid;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+.alerta-body{
+    display: grid;
+    align-items: center;
+    justify-content: center;
+}
+.button{
+    width:250px;
+    height: 50px;
+    font-size: 25px;
+    border:none;
+    border-radius: 15px 40px;
+    color: white;
+    background: #283c86;
+    background: -webkit-linear-gradient(to left, #45a247, #283c86); 
+    background: linear-gradient(to left, #45a247, #283c86); 
+}
+.close{
+    position: relative;
+    top:-100%;
+    left:95%;
+
+}
+.radio{
+    border-radius: 50%;
+    border: none;
+    background: none;
+}
+.centrar{
+    display: grid;
+    align-items: center;
+    justify-content: center;
+}

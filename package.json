@@ -1,0 +1,23 @@
+{
+  "name": "practica-examen",
+  "version": "1.0.0",
+  "description": "Practica examen de Temas Selectos de Ciencias de la Computacion",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo test",
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "author": "hernandev96",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-handlebars": "^6.0.6",
+    "morgan": "^1.10.0",
+    "toastr": "^2.1.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}

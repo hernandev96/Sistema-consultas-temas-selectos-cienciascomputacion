@@ -1,0 +1,312 @@
+<link rel="stylesheet" href="css/bajas.css">
+<link rel="stylesheet" href="css/consulta.css">
+<script src="js/card.js"></script>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $.ajaxSetup({contentType:"application/json; charset=utf-8"});
+        var data=0;
+        $.ajax({
+            type:'GET',
+            url:'/usuarios',
+            dataType:'json',
+            success:(result)=>{
+                data=result;
+                var tam=Object.keys(result).length;
+                for(var j=0;j<tam;j++){
+                    var option=document.createElement('option');
+                    option.setAttribute('value',result[j].name);
+                    $("#name").append(option);
+                }
+
+            }
+        });
+        $("#consultar").click(function(){
+            
+            var name=$("#name_usuario").val();
+            var user=data.find((user)=>user.name==name);
+            $("#info").attr('class','contenedor-info2');
+            info(user);
+        });
+        $("#delete_user").click(function(){
+            $("#alerta").attr("class","alert-container-show");
+        });
+        $("#confirmar").click(function(){
+            var name=$("#name_usuario").val();
+            var user=data.find((user)=>user.name==name);
+            $.ajax({
+
+                type:'DELETE',
+                url:'/usuario/delete/'+user._id,
+                success:function(result){
+                    
+                    
+                    $("#alerta").attr("class","alert-container-hide");
+                    toastr.success("Usuario Eliminado");
+                    setTimeout($(location).attr('href','/bajas'),40000)
+                    
+                },
+                error:function(error){
+                    toastr.error("Error "+error.status+' no se pudo\n eliminar el usuario');
+                    $("#alerta").attr("class","alert-container-hide");
+                }
+            });
+            
+            
+        });
+        $("#close").click(function(){
+            
+            $("#alerta").attr("class","alert-container-hide");
+        });
+        $('#borrar').click(function(){
+            $("#name_usuario").val("");
+            $("#info input").each(function(){
+                $(this).val("");
+            });
+            $("#info").attr('class','contenedor-info');
+            $("#tags-list li").remove();
+            $("#friends-list li").remove();
+
+        });
+
+        
+    });
+
+
+</script>
+
+<datalist id="name">
+    
+</datalist>
+
+<div class="busqueda">
+    <div class="margin">
+        <h2 class="subtitle">Bajas</h2>
+    </div>
+    <div class="margin">
+        <img src="images/buscar.png">
+        <input list="name" class="search-input" name="buscar" id="name_usuario" type="text" required placeholder="Bajas de usuarios por nombre">
+    </div>
+    <div class="margin">
+        <button class="btn btn-dark" id="consultar">
+            <p><b>Consultar</b></p>
+        </button>
+    </div>
+    <div class="margin">
+        <button class="btn btn-danger" id="borrar">
+            <p><b>Borrar</b></p>
+        </button>
+    </div>
+</div>
+<div class="contenedor-info" id="info">
+    <div class="content">
+        <div class="perfil">
+            <figure>
+                <img src="images/perfil.png" width="300" height="300">
+            </figure>
+            <div class="centrar">
+                <button class="btn btn-danger mx-auto" id="delete_user">
+                    Eliminar
+                </button>
+            </div>
+        </div>
+        <div class="info " id="info_user">
+           <div class="margen">
+                <label for="user_id"><img src="images/key.png">
+                    <b>ID usuario:</b> 
+                </label>
+                <input type="text" name="user_id" id="user_id" class="info-input" readonly>
+           </div>
+           <div class="margen">
+                <label for="index_user"><img src="images/index.png">
+                    <b>Index:</b> 
+                </label>
+                <input type="text" name="index_user" id="index_user" class="info-input" readonly>
+           </div>
+           <div class="margen">
+                <label for="guid_user"><img src="images/index.png">
+                    <b>GUID:</b> 
+                </label>
+                <input type="text" name="guid_user" id="guid_user" class="info-input" readonly>
+           </div>
+
+            <div class="margen">
+                <label for="active_user"><img src="images/active.png">
+                    <b>IsActive:</b> 
+                </label>
+                <input type="text" name="active_user" id="active_user" class="info-input" readonly>
+           </div>
+
+           <div class="margen">
+                <label for="balance_user"><img src="images/balance.png">
+                    <b>Balance:</b> 
+                </label>
+                <input type="text" name="balance_user" id="balance_user" class="info-input" readonly>
+           </div>
+
+            <div class="margen">
+                <label for="picture_user"><img src="images/picture.png">
+                    <b>Picture:</b> 
+                </label>
+                <input type="text" name="picture_user" id="picture_user" class="info-input" readonly>
+           </div>
+
+            <div class="margen">
+                <label for="age_user"><img src="images/edad.png">
+                    <b>Edad:</b> 
+                </label>
+                <input type="text" name="age_user" id="age_user" class="info-input" readonly>
+           </div>
+
+           <div class="margen">
+                <label for="eye_user"><img src="images/eyes.png">
+                    <b>Eye Color:</b> 
+                </label>
+                <input type="text" name="eye_user" id="eye_user" class="info-input" readonly>
+           </div>
+
+           <div class="margen">
+                <label for="username">
+                    <img src="images/user.png">
+                    <b>Nombre:</b>
+                </label>
+                <input type="text" name="name" id="username" class="info-input" readonly>
+           </div>
+
+            <div class="margen">
+                <label for="gender_user">
+                    <img src="images/gender.png">
+                    <b>Genero:</b>
+                </label>
+                <input type="text" name="gender_user" id="gender_user" class="info-input" readonly>
+           </div>
+
+           <div class="margen">
+                <label for="company_user">
+                    <img src="images/company.png">
+                    <b>Compañia:</b>
+                </label>
+                <input type="text" name="company_user" id="company_user" class="info-input" readonly>
+           </div>
+
+            <div class="margen">
+                <label for="email_user">
+                    <img src="images/email.png">
+                    <b>Email:</b>
+                </label>
+                <input type="text" name="email_user" id="email_user" class="info-input" readonly>
+           </div>
+
+            <div class="margen">
+                <label for="phone_user">
+                    <img src="images/phone.png">
+                    <b>Telefono:</b>
+                </label>
+                <input type="text" name="phone_user" id="phone_user" class="info-input" readonly>
+           </div>
+
+            <div class="margen">
+                <label for="address_user">
+                    <img src="images/address.png">
+                    <b>Direccion:</b>
+                </label>
+                <input type="text" name="address_user" id="address_user" class="info-input" readonly>
+           </div>
+
+            <div class="margen">
+                <label for="about_user">
+                    <img src="images/about.png">
+                    <b>About:</b>
+                </label>
+                <input type="text" name="about_user" id="about_user" class="info-input" readonly>
+           </div>
+
+            <div class="margen">
+                <label for="registered_user">
+                    <img src="images/register.png">
+                    <b>Registered:</b>
+                </label>
+                <input type="text" name="registered_user" id="registered_user" class="info-input" readonly>
+           </div>
+
+           <div class="margen">
+                <label for="latitude_user">
+                    <img src="images/coordenadas.png">
+                    <b>Latitud:</b>
+                </label>
+                <input type="text" name="latitude_user" id="latitude_user" class="info-input" readonly>
+           </div>
+
+           <div class="margen">
+                <label for="longitude_user">
+                    <img src="images/coordenadas.png">
+                    <b>Longitud:</b>
+                </label>
+                <input type="text" name="longitud_user" id="longitud_user" class="info-input" readonly>
+           </div>
+            
+            <div class="margen">
+                <div class="flex">
+                    <label for="tags_user">
+                        <img src="images/tag.png">
+                        <b>Tags:</b>
+                    </label>
+                    <ul id="tags-list">
+                        
+                    </ul>
+                </div>
+           </div>
+
+           <div class="margen">
+                <div class="flex">
+                    <label for="friends_user">
+                        <img src="images/friends.png">
+                        <b>Amigos:</b>
+                    </label>
+                    <ul id="friends-list">
+                        
+                    </ul>
+                </div>
+            </div>
+
+            <div class="margen">
+                <label for="saludo_user">
+                    <img src="images/saludo.png">
+                    <b>Saludo:</b>
+                </label>
+                <input type="text" name="saludo_user" id="saludo_user" class="info-input" readonly>
+            </div>
+
+            <div class="margen">
+                <label for="fruit_user">
+                    <img src="images/fruit.png">
+                    <b>Fruta Favorita:</b>
+                </label>
+                <input type="text" name="fruit_user" id="fruit_user" class="info-input" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="alert-container-hide" id="alerta">
+    <div class="alerta">
+        <div class="alerta-header">
+            <h4>
+                <img src="images/caveman.png" alt="imagen de la alerta" width="70" height="70">
+                <strong>¿Estas seguro de eliminar al usuario?</strong>
+            </h4>
+        </div>
+        <div class="alerta-body">
+            <button class="button" id="confirmar">
+                <img src="images/confirm.png" width="32" height="32">
+                Confirmar
+            </button>
+        </div>
+        <div class="close">
+            <button class="radio" id="close">
+                <img src="images/close.png" width="48" height="48">
+            </button>
+        </div>
+    </div>
+</div>
